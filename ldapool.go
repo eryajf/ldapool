@@ -24,9 +24,11 @@ type LdapConfig struct {
 	MaxOpen int
 }
 
-var ldapool *LdapConnPool
-var ldapInit = false
-var ldapInitOne sync.Once
+var (
+	ldapool     *LdapConnPool
+	ldapInit    = false
+	ldapInitOne sync.Once
+)
 
 // Connection pool
 type LdapConnPool struct {
