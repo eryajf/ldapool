@@ -1,6 +1,7 @@
 package ldapool
 
 import (
+	"crypto/tls"
 	"fmt"
 	"math/rand"
 	"net"
@@ -62,7 +63,10 @@ func InitLDAP(conf LdapConfig) {
 		ldapInit = true
 	})
 
-	ldapConn, err := ldap.DialURL(conf.Url, ldap.DialWithDialer(&net.Dialer{Timeout: 5 * time.Second}))
+	ldapConn, err := ldap.DialURL(
+		conf.Url,
+		ldap.DialWithDialer(&net.Dialer{Timeout: 5 * time.Second}),
+		ldap.DialWithTLSConfig(&tls.Config{InsecureSkipVerify: true}))
 	if err != nil {
 		panic(fmt.Sprintf("Init Ldap Connection Failed: %v", err))
 	}
@@ -161,7 +165,10 @@ func (lcp *LdapConnPool) nextRequestKeyLocked() uint64 {
 
 // initLDAPConn
 func initLDAPConn(conf LdapConfig) (*ldap.Conn, error) {
-	ldap, err := ldap.DialURL(conf.Url, ldap.DialWithDialer(&net.Dialer{Timeout: 5 * time.Second}))
+	ldap, err := ldap.DialURL(
+		conf.Url,
+		ldap.DialWithDialer(&net.Dialer{Timeout: 5 * time.Second}),
+		ldap.DialWithTLSConfig(&tls.Config{InsecureSkipVerify: true}))
 	if err != nil {
 		return nil, err
 	}
